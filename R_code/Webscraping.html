@@ -11,7 +11,7 @@
 
 
 
-<title>index</title>
+<title>Webscraping</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -374,42 +374,232 @@ summary {
 
 
 
-<h1 class="title toc-ignore">index</h1>
+<h1 class="title toc-ignore">Webscraping</h1>
 
 </div>
 
 
-<div id="note-on-data-science-with-r" class="section level1">
-<h1>Note on data science with R</h1>
-<div id="topic" class="section level2">
-<h2>Topic</h2>
+<div id="網頁爬蟲-webscraping" class="section level2">
+<h2>網頁爬蟲 Webscraping</h2>
+<ul>
+<li><p>由於不是每個網站都提供API，但網頁上卻有你想要分析的資料（像是ptt推文！？），除了人工複製貼上以外，也可以將網頁處理程式化，以<strong>程式化</strong>的方式<strong>擷取網頁資料</strong>就叫做<strong>網頁爬蟲（Webscraping）</strong>。</p></li>
+<li><p>在R中可以使用<strong>rvest</strong> (Wickham 2019a) package<strong>輔助爬蟲</strong>程式撰寫(裡面用到<strong>CSS selector</strong>或<strong>XPath</strong>語法)</p></li>
+<li><p>rvest套件，經由以下步驟進行網站解析：</p>
 <ol style="list-style-type: decimal">
-<li><p><a href="https://github.com/Rdatatable/data.table/wiki/Benchmarks-%3A-Grouping"><strong>data.table</strong></a> and <a href="https://dplyr.tidyverse.org/"><strong>dplyr</strong></a>: <a href="https://github.com/oicjacky/R-code/blob/master/R_datatable_dplyr.R">R_datatable_dplyr</a></p></li>
-<li><p><a href="https://stringr.tidyverse.org/articles/regular-expressions.html"><strong>stringr</strong> and Regular Expression</a>: <a href="https://github.com/oicjacky/R-code/blob/master/Regular_Expression.html">Regular_Expression</a></p></li>
-<li><p><strong>ggplot</strong>, <strong>choropleth</strong>, <strong>treemap</strong>: <a href="https://github.com/oicjacky/R-code/blob/master/R_ggplot_Choropleth_Treemap.html">R_ggplot_Choropleth_Treemap</a></p></li>
-<li><p>Open data API, json: <a href="https://github.com/oicjacky/R-code/blob/master/TaipeiOpenDataAPI_HTTP_XML.html">TaipeiOpenDataAPI_HTTP_XML</a></p></li>
-<li><p>webscraping with <strong>rvest</strong> (CSS selector, Xpath): <a href="https://github.com/oicjacky/R-code/blob/master/Webscraping.html">Webscraping</a></p></li>
-</ol>
-<div id="machine-learning" class="section level3">
-<h3>Machine Learning</h3>
-<ol style="list-style-type: decimal">
-<li><p>logistic_LDA_QDA_KNN</p></li>
-<li><p>DecisionTrees_ClassificationTree</p></li>
-<li><p>RegressionTrees_RandomForest_Boosting</p></li>
-</ol>
-<hr />
-</div>
-</div>
-<div id="references" class="section level2">
-<h2>References</h2>
-<p>I. <a href="https://yijutseng.github.io/DataScienceRBook/">曾意儒副教授, 資料科學與R語言</a></p>
-<ol start="2" style="list-style-type: upper-roman">
-<li><p><a href="https://r4ds.had.co.nz/">Hadley Wickham, R for Data Science</a></p></li>
-<li><p><a href="http://faculty.marshall.usc.edu/gareth-james/ISL/">Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani, An Introduction to Statistical Learning with Applications in R</a></p></li>
-<li><p><a href="https://web.stanford.edu/~hastie/Papers/ESLII.pdf">Trevor Hastie, Robert Tibshirani and Jerome Friedman, The Elements of Statistical Learning</a></p></li>
-</ol>
-<p>V. Other resource on the Internet…</p>
-</div>
+<li>使用read_html(“欲擷取的網站網址”)讀取網頁</li>
+<li>使用html_nodes()擷取所需內容 (條件為CSS或xpath標籤)</li>
+<li>使用html_text()處理/清洗擷取內容，留下需要的資料</li>
+<li>使用html_attr()擷取資料參數（如連結url）</li>
+</ol></li>
+</ul>
+<blockquote>
+<p>用 css 路徑定位的話，我們可以用幾種方式告訴程式我們要範例中的 a 標籤:</p>
+<ul>
+<li><p>a 指定要標籤 a</p></li>
+<li><p><strong>#foo</strong> 指定要 <em>id</em> 為 <em>foo</em> 的標籤</p></li>
+<li><p><strong>.bar</strong> 指定 <em>class</em> 為 <em>bar</em> 的標籤</p></li>
+</ul>
+</blockquote>
+<pre class="r"><code># IMDB&#39;s fan favorites movie and score
+Newsurl &lt;- &quot;https://www.imdb.com/&quot;
+con &lt;- read_html(Newsurl)
+articlebody &lt;- con %&gt;%
+  html_nodes(&quot;.fan-picks a.ipc-poster-card__title&quot;) %&gt;%
+  html_text()
+articlebody1 &lt;- con %&gt;%
+  html_nodes(&quot;.fan-picks .ipc-poster-card__rating-star-group span&quot;) %&gt;%
+  html_text(trim = TRUE)
+articlebody2 &lt;- con %&gt;%
+  html_nodes(&quot;.fan-picks a.ipc-poster-card__title&quot;) %&gt;%
+  html_attr(&quot;href&quot;)
+articlebody2 &lt;- paste0(&quot;https://www.imdb.com&quot;, articlebody2)
+
+article &lt;- data.frame(content = articlebody, score = articlebody1, url = articlebody2)
+head(article)</code></pre>
+<pre><code>##    content score
+## 1     1917   8.4
+## 2 寄生上流   8.6
+## 3 鋒迴路轉   8.0
+## 4     小丑   8.5
+## 5 兔嘲男孩   8.0
+## 6 賽道狂人   8.1
+##                                                                url
+## 1 https://www.imdb.com/title/tt8579674/?ref_=hm_fanfav_tt_1_pd_fp1
+## 2 https://www.imdb.com/title/tt6751668/?ref_=hm_fanfav_tt_2_pd_fp1
+## 3 https://www.imdb.com/title/tt8946378/?ref_=hm_fanfav_tt_3_pd_fp1
+## 4 https://www.imdb.com/title/tt7286456/?ref_=hm_fanfav_tt_4_pd_fp1
+## 5 https://www.imdb.com/title/tt2584384/?ref_=hm_fanfav_tt_5_pd_fp1
+## 6 https://www.imdb.com/title/tt1950186/?ref_=hm_fanfav_tt_6_pd_fp1</code></pre>
+<pre class="r"><code># ETtoday 熱們新聞
+Newsurl &lt;- &quot;https://www.ettoday.net/&quot;
+con &lt;- read_html(Newsurl)
+articlebody &lt;- con %&gt;% 
+  html_nodes(&quot;div.block .block_content .part_list_1 .txt a&quot;) %&gt;%
+  html_text(trim = TRUE)
+articlebody1 &lt;- con %&gt;% 
+  html_nodes(&quot;div.block .block_content .part_list_1 .txt a&quot;) %&gt;%
+  html_attr(&quot;href&quot;)
+articlebody1 &lt;- paste0(&quot;https://www.ettoday.net&quot;, articlebody1)
+article &lt;- data.frame(content = articlebody, url = articlebody1)
+head(article)</code></pre>
+<pre><code>##                                                                  content
+## 1              去日本爽玩確診！案54被爆回台「連玩3夜店」　名嘴笑：挫咧等
+## 2 影／畫面曝光！桃機湧萬人逃難返國潮　防疫車隊排爆...人龍繞2排看不到盡頭
+## 3                                             《李屍朝鮮》播兩季要改劇名
+## 4                 獨／直擊好市多搶購潮！闖3關...結帳長龍嘆：與櫃檯的距離
+## 5                      遭開3槍推下山！她最後合照放閃文：你沒外面說的糟糕
+## 6                         屏東男心情不好拔鐮刀猛砍路人！她噴血苦求：救我
+##                                                 url
+## 1 https://www.ettoday.net/news/20200319/1670966.htm
+## 2 https://www.ettoday.net/news/20200319/1671203.htm
+## 3 https://www.ettoday.net/news/20200318/1670983.htm
+## 4 https://www.ettoday.net/news/20200319/1671261.htm
+## 5 https://www.ettoday.net/news/20200319/1671058.htm
+## 6 https://www.ettoday.net/news/20200318/1670493.htm</code></pre>
+<pre class="r"><code># 爬不同日期的新聞內容
+Newsurl &lt;- &quot;https://www.ettoday.net/news/news-list&quot; 
+
+con &lt;- read_html(paste0(Newsurl,&quot;.htm&quot;))
+# time of news
+news_time &lt;- con %&gt;% 
+  html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+  html_nodes(&quot;.date&quot;) %&gt;%
+  html_text()
+# class of news
+news_class &lt;- con %&gt;% 
+  html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+  html_nodes(&quot;em.tag&quot;) %&gt;%
+  html_text()
+# content 
+news_content &lt;- con %&gt;% 
+  html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+  html_nodes(&quot;a&quot;) %&gt;%
+  html_text(trim = TRUE)
+# url
+news_url &lt;- con %&gt;% 
+  html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+  html_nodes(&quot;a&quot;) %&gt;%
+  html_attr(&quot;href&quot;)
+news_url &lt;- paste0(&quot;https://www.ettoday.net&quot;, news_url)
+
+article &lt;- data.frame(time = news_time,
+                      class = news_class,
+                      content = news_content,
+                      url = news_url)
+head(article)</code></pre>
+<pre><code>##               time class
+## 1 2020/03/19 22:00  時尚
+## 2 2020/03/19 21:56  社會
+## 3 2020/03/19 21:55  影劇
+## 4 2020/03/19 21:54  生活
+## 5 2020/03/19 21:54  影劇
+## 6 2020/03/19 21:50  生活
+##                                                          content
+## 1         李玉璽買耳機不花冤枉錢　讚萬寶龍精品級設計、戴了超舒服
+## 2 北市監理所集體貪汙！繼所長之後　科長也收受代檢廠賄賂遭羈押禁見
+## 3   小賈斯汀寵妻無極限！　曬超甜居家隔離照「肉麻土味情話」閃瞎網
+## 4     新冠肺炎病例破百「未來14天為防疫關鍵期」莊人祥分析兩種情況
+## 5 免排隊！譚艾珍超強「十步驟DIY布口罩」　隨身帶「防疫5寶」保健康
+## 6          發燒38度「台北街頭狂奔」！移工默遞紙條…轉逃跑原因曝光
+##                                                 url
+## 1 https://www.ettoday.net/news/20200319/1671826.htm
+## 2 https://www.ettoday.net/news/20200319/1671971.htm
+## 3 https://www.ettoday.net/news/20200319/1671978.htm
+## 4 https://www.ettoday.net/news/20200319/1671742.htm
+## 5 https://www.ettoday.net/news/20200319/1671015.htm
+## 6 https://www.ettoday.net/news/20200319/1671970.htm</code></pre>
+<pre class="r"><code># different date
+#&quot;https://www.ettoday.net/news/news-list-2020-3-18-0.htm&quot; ==
+news_webscrap &lt;- function(year, month, day, Newsurl = &quot;https://www.ettoday.net/news/news-list&quot;){
+  # year &lt;- 2020
+  # month &lt;- 3
+  # day &lt;- 18
+  which_date_you_want &lt;- 
+  paste(Newsurl ,year, month, day, &quot;0.htm&quot;, sep = &quot;-&quot;) 
+  
+  con &lt;- read_html(which_date_you_want)
+  # time of news
+  news_time &lt;- con %&gt;% 
+    html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+    html_nodes(&quot;.date&quot;) %&gt;%
+    html_text(trim = TRUE)
+  # class of news
+  news_class &lt;- con %&gt;% 
+    html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+    html_nodes(&quot;em.tag&quot;) %&gt;%
+    html_text(trim = TRUE)
+  # content 
+  news_content &lt;- con %&gt;% 
+    html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+    html_nodes(&quot;a&quot;) %&gt;%
+    html_text(trim = TRUE)
+  # url
+  news_url &lt;- con %&gt;% 
+    html_nodes(&quot;div.block div.block_content div.part_list_2 h3&quot;) %&gt;% 
+    html_nodes(&quot;a&quot;) %&gt;%
+    html_attr(&quot;href&quot;)
+  news_url &lt;- paste0(&quot;https://www.ettoday.net&quot;, news_url)
+
+  return(data.frame(time = news_time,
+                    class = news_class,
+                    content = news_content,
+                    url = news_url) 
+  )
+
+}
+article20191205 &lt;- news_webscrap(year = 2019, month = 12, day = 05)
+article20181205 &lt;- news_webscrap(year = 2018, month = 12, day = 05)
+article20111205 &lt;- news_webscrap(year = 2011, month = 12, day = 05)</code></pre>
+<ul>
+<li>2019/12/05 新聞</li>
+</ul>
+<pre class="r"><code>head(article20191205)</code></pre>
+<pre><code>##               time class
+## 1 2019/12/05 23:53  電競
+## 2 2019/12/05 23:53  地方
+## 3 2019/12/05 23:53  國際
+## 4 2019/12/05 23:52  大陸
+## 5 2019/12/05 23:50  財經
+## 6 2019/12/05 23:45  影劇
+##                                                                 content
+## 1            LIGHTSPEED無線技術樹立新標竿　羅技G502入選2019百大最佳產品
+## 2        吃早餐連2次吃到毛！新北女氣炸PO網…老闆娘哭了「公布監視器畫面」
+## 3          中駐美外交官見地方官需「通知國務院」　中國對等反制美國外交官
+## 4               香港罕見發生規模1.4地震「搖晃數秒鐘」　市民驚：天有異象
+## 5                                    中美晶轉投資台特化獲台積電供應商獎
+## 6 扣嫂婚前告白謝和弦：我相信你一定會好起來！結婚3年「目睹老公呼麻」爆哭
+##                                                 url
+## 1 https://www.ettoday.net/news/20191205/1595474.htm
+## 2 https://www.ettoday.net/news/20191205/1595470.htm
+## 3 https://www.ettoday.net/news/20191205/1595465.htm
+## 4 https://www.ettoday.net/news/20191205/1595473.htm
+## 5 https://www.ettoday.net/news/20191205/1595466.htm
+## 6 https://www.ettoday.net/news/20191205/1595471.htm</code></pre>
+<ul>
+<li>2018/12/05 新聞</li>
+</ul>
+<pre class="r"><code>head(article20181205)</code></pre>
+<pre><code>##               time class
+## 1 2018/12/05 23:50  社會
+## 2 2018/12/05 23:46  財經
+## 3 2018/12/05 23:44  影劇
+## 4 2018/12/05 23:44  社會
+## 5 2018/12/05 23:43  國際
+## 6 2018/12/05 23:40  時尚
+##                                                        content
+## 1     男帶小學生在SOGO百貨「做色色的事」法官認為情有可原還減刑
+## 2     全力支持綠能產業穩定資金需求　櫃買鬆綁外國人發行外債資格
+## 3 薛之謙驗毒結果出爐！　黃毅清嗆「野雞律師函」：給腦殘粉看就行
+## 4   莽夫潑酸妻兒上吊亡！鄰曝「酒後瘋狗目」　兒曾怨：回家是恐怖
+## 5                 西沙群島浪花礁建新平台設施　美智庫：軍事用途
+## 6             伊薩米勒穿猿人迷彩致敬日本潮牌　見偶像洛基太興奮
+##                                                 url
+## 1 https://www.ettoday.net/news/20181205/1323753.htm
+## 2 https://www.ettoday.net/news/20181205/1323849.htm
+## 3 https://www.ettoday.net/news/20181205/1323847.htm
+## 4 https://www.ettoday.net/news/20181205/1323775.htm
+## 5 https://www.ettoday.net/news/20181205/1323705.htm
+## 6 https://www.ettoday.net/news/20181205/1323561.htm</code></pre>
 </div>
 
 
