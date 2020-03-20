@@ -11,16 +11,16 @@ output: html_document
 [R_datatable_dplyr](https://github.com/oicjacky/R-code/blob/master/R_datatable_dplyr.R) 
 
 2. [**stringr** and Regular Expression](https://stringr.tidyverse.org/articles/regular-expressions.html):
-[Regular_Expression](https://github.com/oicjacky/R-code/blob/master/Regular_Expression.html)
+[Regular_Expression](https://oicjacky.github.io/R_code/Regular_Expression.html)
 
 3. **ggplot**, **choropleth**, **treemap**:
-[R_ggplot_Choropleth_Treemap](https://github.com/oicjacky/R-code/blob/master/R_ggplot_Choropleth_Treemap.html)
+[R_ggplot_Choropleth_Treemap](https://oicjacky.github.io/R_code/R_ggplot_Choropleth_Treemap.html)
 
 4. Open data API, json:
-[TaipeiOpenDataAPI_HTTP_XML](https://github.com/oicjacky/R-code/blob/master/TaipeiOpenDataAPI_HTTP_XML.html)
+[TaipeiOpenDataAPI_HTTP_XML](https://oicjacky.github.io/R_code/TaipeiOpenDataAPI_HTTP_XML.html)
 
 5. webscraping with **rvest** (CSS selector, Xpath):
-[Webscraping](https://github.com/oicjacky/R-code/blob/master/Webscraping.html)
+[Webscraping](https://oicjacky.github.io/R_code/Webscraping.html)
 
 ### Machine Learning
 
