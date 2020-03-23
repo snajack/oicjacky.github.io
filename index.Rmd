@@ -24,11 +24,11 @@ output: html_document
 
 ### Machine Learning
 
-1. logistic_LDA_QDA_KNN
+1. [logistic_LDA_QDA_KNN](https://oicjacky.github.io/R_code/ML/logistic_LDA_QDA_KNN.html)
 
-2. DecisionTrees_ClassificationTree
+2. [DecisionTrees_ClassificationTree](https://oicjacky.github.io/R_code/ML/DecisionTrees_ClassificationTree.html)
 
-3. RegressionTrees_RandomForest_Boosting
+3. [RegressionTrees_RandomForest_Boosting](https://oicjacky.github.io/R_code/ML/RegressionTrees_RandomForest_Boosting.html)
 
 ---
 
